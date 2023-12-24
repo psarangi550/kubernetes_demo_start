@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleetman-queueapp
+  namespace: default
+spec:
+  selector:
+    app: queueapp
+    release: "1"
+  type: NodePort
+  ports:
+  - name: http
+    protocol: TCP
+    port: 8161
+    targetPort: 8161
+    # If you set the `spec.type` field to `NodePort` and you want a specific port number,
+    # you can specify a value in the `spec.ports[*].nodePort` field.
+    nodePort: 30010

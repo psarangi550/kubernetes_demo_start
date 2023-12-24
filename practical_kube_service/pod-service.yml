@@ -1,0 +1,23 @@
+apiVersion: v1 # defining the apiVersion for the kubernetes in here 
+kind: Service # here the kind of kubernetes object we will be using as Service where the S is in caps
+metadata:
+  # Unique key of the Service instance name
+  name: fleetman-webapp
+spec: # defining the specification over here
+  ports:
+  # Accept traffic sent to port 80
+  # this will define which port we are exposing using this kubernetes Service
+  - name: http #helpful label to define what type of traffic it is going to be
+    # using this port 80 we can declare on which port we are accepting the PODS as the container exposing on the Port 80
+    # the targetPort will decide to which port we are going to forward to the container from the Port where we accept the traffic
+    port: 80 # here the Target port anf Port of the container will be same 
+    # the targetPort will default to the port that we have provided in the kubernetes
+    nodePort: 30080 # here defining the nodePort Service as 30080 using which we can access the port outside the kubernetes cluster
+  selector:
+    # This define the which PODS are going to be represented by this service 
+    # This Service become the Networking endpoint for other services or external users to connect to (eg browser)
+    app: webappnew
+    release: "0-5"
+
+  type: NodePort
+
