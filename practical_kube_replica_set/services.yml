@@ -1,0 +1,35 @@
+apiVersion: v1 # defining the Services Version as v1 as it comes from the core group over here
+kind: Service # defining the type of object as Service in this particular case
+metadata: # defining the name for the Service which might be required by other Service in or5der to communicate
+  name: fleetman-webapp
+spec: # defining the specification for the Service over here
+  selector: # defining the selector for the Service which will select the POD label in that case
+    app: webapp # defining the PODs label to match by the key-value pair
+  ports: # defining the Ports for the POD to accept and forward to container 
+  - name: http # name of the Port Service been define
+    port: 80 # accept traffic on port 80
+    targetPort: 80 # forward that to port 80 of container
+    nodePort: 30080 # opening the nodePort on 30080 to access outrside the cluster
+
+  type: NodePort # here the type of Service is of NodePort Service Type and can be accessed outside the cluster
+
+---
+# differenciating the services of fleetman-webapp to the fleetman-queueapp
+
+apiVersion: v1 # defining the apiVersion as v1 as Service belong to the core group
+kind: Service # defining the type of kubernetes object is of Service
+metadata: # defining the name of the Service as fleetman-queueapp
+  name: fleetman-queueapp
+spec: # defining the specification for the Kubernetes Services
+  selector: # defining the selector based on the POD label
+    app: queueapp # defining the selector as queueapp in this case
+  ports: # defining all the Ports thats been used
+  - name: http # defining the Port name as http over here
+    port: 8161 # accept traffic on port 80
+    targetPort: 8161 # forward that traffic to port 8161 of the container
+    protocol: TCP # defining the protocol as TCP in this case
+    nodePort: 30010 # opening the nodePort on 30080 to access outrside the cluster
+
+  type: NodePort # here the type of Service is of NodePort Service Type and can be accessed outside the cluster
+
+
