@@ -1,0 +1,32 @@
+apiVersion: v1 # defining the apiVersion for the POD as v1 as it falls under the core group
+kind: Pod # definingthe type of kubernetes object as Pod in here
+metadata: # defining the name and label for POD that will be created
+  name: mysql # defining the name of the POD as mysql
+  labels: # defining the POD label as app: mysql as key-value pair
+    app: mysql
+spec: # defining the specification for the POD with container details
+  containers: # defining all the container in this case here
+  - name: mysql # defining the name of the container as mysql 
+    image: mysql:5 # defining the name of the image as mysql:5
+    env: # defining the Environment variable for the Container
+    - name: MYSQL_ROOT_PASSWORD # here the mysql DB with root password as password
+      value: password
+    - name: MYSQL_DATABASE # mysql default DB will be created with the name as the fleetman
+      value: fleetman
+
+
+---
+# Document Separator in order to define the Kubernetes Service in here
+
+apiVersion: v1 # defining the apiVerison as v1 in this case
+kind: Service # defining the type of kubernetes object as Service in here
+metadata: # defining the name of service which we want to reach as fleetman-database
+  name: fleetman-database
+spec: # defining the specification for the Kubernetes Services in here
+  selector: # selector to select the POD based on the POD label
+    app: mysql
+  ports: # defining the Port we want to expose from the POD container
+  - name: http # here the name of the port we want to accept as http
+    port: 3306 # allowing the traffic on port 3306 in here
+    targetPort: 3306 # forwarding traffic to port 3306 in  here
+  type: ClusterIP # defining the type of Service will be as ClusterIp in this case which can only be accessed within the kubernetes cluster as both the webapp POD and fleetman-database POD are inside the same cluster they can able to communicate with each other
