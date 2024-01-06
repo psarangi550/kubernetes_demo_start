@@ -1,0 +1,2 @@
+# mongo Service in kubernetes
+
