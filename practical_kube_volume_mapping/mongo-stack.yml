@@ -20,9 +20,9 @@ spec:
           mountPath: /data/db
       volumes:
       - name: mongo-persiste-data
-        hostPath:
-          path: /mnt/mongo-data
-          type: DirectoryOrCreate
+        persistentVolumeClaim:
+          claimName: mongo-pvc
+
 
 
 
