@@ -96,6 +96,8 @@
 
 - then we can visit the `AWS ELB DNS Name` on the web browser then we can see for few minutes the `WebPage getting loaded`
 
+- but here we are running the `PODs` as `Deployment` which will create the `replica-set` in order to `handle` the `PODs management` , if the `PODs goes down then replica-set` will `create the new PODs` and `make it as restarted and running`  and it will reschedule the `new PODs` to be run on the `survining nodes` as we have `termninated one node or instances`  
+
 - now when we do the `kubectl get pods -o wide` then we can see that below response in this case
 
     ```bash
@@ -118,7 +120,7 @@
     
     ```
 
-- Even though the `fleetman website take time to load up` as the `node been restarted` , but we can see that `by the time ELB load balancer being timeout and display a timeout result` the `new PODs get restarted in the suviving nodes` and hence the `ELB able to fetch the data` before the `timeout happens` 
+- Even though the `fleetman website take time to load up` as the `node been restarted` , but we can see that `by the time ELB load balancer being timeout and display a timeout result` the `new PODs get restarted and running in the suviving nodes` and hence the `ELB able to fetch the data` before the `timeout happens` and `routing to the survining node new PODs`
 
 - but this is `one of the instances`, we can safely assume that `AWS ELB timeout was nearby` , but before that happens we are `lucky` that `new PODs been spunned on the survining nodes`
 
@@ -134,9 +136,42 @@
 
 - ![Alt text](image-7.png)
 
-- here we can see that `At 2024 January 21, 05:27:08  an instance was taken out of service in response to an EC2 health check indicating it has been terminated or stopped` and after `1 sec` then we can see the logs as `2024 January 21, 05:27:09  an instance was launched in response to an unhealthy instance needing to be replaced.` as the `Auto Scaling Group associated with the EC2 instance node`  constantly monitoring the `kops kubernetes cluster` if one node being down then we will be getting the `terminated` then `it will spin up the new node in that case`
+- here we can see that `At 2024 January 21, 05:27:08  an instance was taken out of service in response to an EC2 health check indicating it has been terminated or stopped` and after `1 sec` then we can see the logs as `2024 January 21, 05:27:09  an instance was launched in response to an unhealthy instance needing to be replaced.` as the `Auto Scaling Group associated with the EC2 instance node`  constantly monitoring the `kops kubernetes cluster` if one node being down then we will be getting the `terminated` then `it will spin up the new node in that case` because there is a `gap` between the `desired and required capacity` in `Auto Scaling Group`
+
+- ![Alt text](image-8.png)
+
+- we can also confirm that by making it as below command
+
+    ```bash
+        kubectl get modes 
+        # fetching the nodes present in the kops cluster in this case
+        NAME                  STATUS   ROLES           AGE   VERSION
+        i-00f3a5b96777d602f   Ready    node            39h   v1.28.5
+        i-01b544d757096d8aa   Ready    control-plane   39h   v1.28.5 # master node or control plane
+        i-07f1a54e4eb6d10ad   Ready    node            39h   v1.28.5
+        i-094d7f237494e3fda   Ready    node            45m   v1.28.5 # here we can see that node get created 435 min before only
+    
+    ```
 
 - but if we check the `kubectl get pods -o wide` we can see the `new node whioch been spunned by the Auto Scaling Group` never used inside the `kubernetes` to spin up the `POD` , what will be better if `kubernetes can stop few PODs and spunned that on the new nodes`
 
+    ```bash
+        kubectl get pods -o wide
+        # fetching which PODs been running on which node as we already shutdown one node
+        # the output will be as below this been shown
+        
+        NAME                                  READY   STATUS    RESTARTS   AGE     IP             NODE                  NOMINATED NODE   READINESS GATES
+        api-gateway-56c46fbcdb-85v2b          1/1     Running   0          16h     100.96.3.122   i-00f3a5b96777d602f   <none>           <none>
+        mongodb-578b98fbd4-7vrr6              1/1     Running   0          16h     100.96.1.172   i-07f1a54e4eb6d10ad   <none>           <none>
+        position-simulator-5fdb4ddbd5-82n2d   1/1     Running   0          16h     100.96.3.238   i-00f3a5b96777d602f   <none>           <none>
+        position-tracker-59fdfd8cf4-kdk6s     1/1     Running   0          3m9s    100.96.3.133   i-00f3a5b96777d602f   <none>           <none>
+        queueapp-f55dcb97d-z7hgs              1/1     Running   0          3m9s    100.96.3.130   i-00f3a5b96777d602f   <none>           <none>
+        webapp-66765b68df-djrff               1/1     Running   0          3m10s   100.96.3.117   i-00f3a5b96777d602f   <none>           <none>
+
+        # here as we can see the new node instance-ID not being used for any of the PODs  in here
+    
+    ```
+
 - but this behaviour of `kubernetes` make sense as `kubernetes has no idea` that there will another `kubernetes node`  which it can use 
 
+- we have designed the `micro-service system` such that `any POD failure then due to replica set will going to restart the POD` , but `kubernetes will not aware about that` , hence it will not `stopped the POD` and `restart it in new node` for which also it does not have any idea , `according to kubernetes` if it does so there might be chances of loosing the data
