@@ -1,0 +1,42 @@
+
+apiVersion: apps/v1 # defining the apiVersios as apps/v1 as the Deployment belong to apps group
+kind: Deployment # defining the type of kubernetes object we will be using for this 
+metadata: # defining the name as mongodb in this case
+  name: mongodb
+spec: # defining the specification for the Deployment  over here
+  selector: # selector which will select the POD based on their label as key:value pair
+    matchLabels:
+      app: mongodb
+  replicas: 1 # defining that we need to create 1 replica set for the Deployment which will manage the PODS restart when it get failed
+  template: # defining the template for the PODs to be get created in here
+    metadata: # metadata such as name, namespace and labels with key value pair can be described over here
+      labels:
+        app: mongodb
+    spec: # specification for the POD been described in here
+      containers: # defining the container used inside the POD
+      - name: mongodb # name of the container is mongodb
+        image: mongo:3.6.5-jessie # image used for the POD defined here
+        volumeMounts: # defining the volumeMount which will display info about the container Data
+        - name: mongo-persiste-data # name of the container volume that we want to mape provided here
+          mountPath: /data/db # which folder inside the POID container we want to map to outer storage
+      volumes: # defining thew volumes where  we want to save the storage
+      - name: mongo-persiste-data # referencing the volumes where the mapped container volume need to be stored
+        persistentVolumeClaim: # defining the persistentVolumeClaim which will be define whatr resources and storage required for the Volume Mount
+          claimName: mongo-pvc # here defining  the claimName which will be defined in the storage.yml as persistentVolumeClaim name
+
+---
+# now we can define the mongodb service as well with the document separator
+
+apiVersion: v1 # defining the apiVersion as v1 whicdh will be used for the service as service belong to the core group hence mentioned as v1
+kind: Service # here the type of kyubernetes object we will be using is of Service type
+metadata: # defining the name for themongodb service as fleetman-mongodb which will also be used in the position-tracker in order to save the info
+  name: fleetman-mongodb
+spec: # defining the services specification in this case 
+  selector: # defining the different selector for Service which will help in fetching the pOD in here 
+    app: mongodb
+  ports: # defining the ports over here with protocol as TCP
+  - name: mongoport # here the name of the port is of mongoport in here
+    port: 27017 # here the port is of 27017
+    protocol: TCP # defining the protocol we will be using is of TCP only
+
+  type: ClusterIP # defining the type as the ClusterIP so that  this service can opnly be applied inside the kops kubernetes clust
