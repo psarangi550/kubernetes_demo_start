@@ -198,6 +198,7 @@
 - we can do that as below 
 
     ```bash
+        cd pract_deploy_resources_into_kops_cluster_aws # moving to the folder
         kubectl apply -f .
         # applying the kubernetes yml changtes in here
         # the output will be as below in this case
