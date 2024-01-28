@@ -28,14 +28,15 @@
     ```bash
         kubectl get all
         # using the kubectl get all to fetch all the kubernetes instance in the default namegroup
-    
-    
-    
-    
+        # we can see all the kubernetes object in the default namespace for the EKS cluster
+        NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+        service/kubernetes   ClusterIP   10.100.0.1   <none>        443/TCP   56m
     ```
 
-- now if we are going to the `AWS Mgmt console` &rarr; `AWS EKS` &rarr; `we can see the command in here`
+- now if we are going to the `AWS Mgmt console` &rarr; `AWS EKS` &rarr; `we can see the EKS cluster in here` as ![Alt text](image.png)
 
 - if we goto the `EC2 instance` &rarr; `do a refresh` then we can see the `Worker node (m5.large) instances` running which will `contains the POD service`
+
+- ![Alt text](image-1.png)
 
 - here we will not be able to see the `control-plane/ masternode` because as those being managed by `amazon`
