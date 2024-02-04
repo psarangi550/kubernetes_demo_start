@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress # here the type of kubernetes object we will be building is the kubernetes Ingress object
+metadata: # defining the name for the Ingress controller
+  name: basic-routing # here defining the name of the ingress as basic-routing
+spec:
+  rules: # here we will be defining the routing rules for the ingress controller
+  # here we will be defining the series of host rules in this case here
+  - host: fleetman.com # here defining the host that we have defined inside the /etc/hosts files in linux or driver/etc/hosts in windows
+    http: # here we need to define the http in  this case
+      paths: # defining the multiple path as list in here
+      - path: /
+        pathType: Prefix
+        backend: # here defining the backend service that we will be pointing to 
+          service:
+            name: fleetman-webapp # here the name of service being as fleetman-webapp
+            port: # which port fleetman-webapp kubernetes Service that exposes internally
+              number: 80 # here we need to specify the port which being opened by the backend service that we are pointing to
+  - host: queue.fleetman.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: fleetman-queue
+            port:
+              number: 8161
+

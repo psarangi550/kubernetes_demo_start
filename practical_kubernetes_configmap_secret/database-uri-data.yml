@@ -1,0 +1,9 @@
+apiVersion: v1 # here the configMap belong to the core group hence we can mention as below 
+kind: ConfigMap # defining the kubernetes object opf type as ConfigMap
+metadata: # providing the name for the ConfigMap in here
+  name: database-uri-info-v2
+  namespace: default # specifying the namespace as default in here
+data: # here we need to define a key called data where we will define the value as key value pair
+  # defining the value as the key value pair
+  database.url: https://mydatabase.<something>.<something>:3306
+  database.password: P@SSW0RD

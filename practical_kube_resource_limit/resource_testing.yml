@@ -1,0 +1,25 @@
+apiVersion: apps/v1 # here defining the apiVersion as apps/v1 which belong to the apps group
+kind: Deployment # here defining the kind as Derployment in this case
+metadata: # defining the name of the Deployment in this case
+  name: queueapp
+spec: # defining the specification with respect to the Deployment
+  selector: # selector to select the POD based on POD label
+    matchLabels:
+      app: queueapp
+  replicas: 1 # number of replicas to manage our POD
+  template: # POD definintion being defined in here as template
+    metadata:
+      labels:
+        app: queueapp
+    spec: # specification of the POD container being defined in here
+      containers: # container being defined in this case
+      - name: queueapp # name of the POD defined in here
+        image: richardchesterwood/k8s-fleetman-queue:release2 # image for the POD being defined in here
+        resources: # here we are requesting for the memory/CPU resource in this case 
+          requests: # here we are requesting for the memory/CPU resource in this case 
+            memory: 6Mi # asking for 300MB of Memory required for this POD with resource request
+            cpu: 100m
+          limits:
+            memory: 6Mi
+            cpu: 200m
+
