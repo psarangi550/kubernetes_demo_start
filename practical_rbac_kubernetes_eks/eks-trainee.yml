@@ -1,0 +1,42 @@
+# here we can define the cluster role apiVersion using the command as below
+# we can use the command as kubectl api-resources -o wide | grep clusterroles
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole # here the type of object we will be using is of ClusterRole
+metadata: # here defining the name of the ClusterRole being as trainee-clusterole
+  # ClusterRole were not namespaced hence we can ignore mentioning the namespace in this case
+  name: trainee-clusterole
+rules: # defining the rule for the CLusterRole
+- apiGroups: [""] # here we are pointing to the core apiGroup under which POD/Services/configMaps/Secrets will going to be get created
+  verbs: ["get", "list"] # we can also see the verbs we can provide using the command as kubectl api-resources -o wide | grep clusterroles
+  # here we are providing the access to read and list the resources mentioned down
+  resources: ["pods", "pods/logs", "nodes", "namespaces"] # here we are telling what action it can perform on the cluster based on the Role on which kubernetes resources
+
+- apiGroups: ["apps"] # defining the apiGroup as the apps and apiVersion as apps/v1
+  verbs: ["get", "list"] # we can also see the verbs we can provide using the command as kubectl api-resources -o wide | grep clusterroles
+  # here we are providing the access to read and list the resources mentioned down
+  resources: ["deployments", "daemonsets", "statefulesets", "replicasets"]
+  # here we are telling what action it can perform on the cluster based on the Role on which kubernetes resources
+
+- apiGroups: ["batch"] # defining the apiGroup as the batch and apiVersion as batch/v1
+  verbs: ["get", "list"] # we can also see the verbs we can provide using the command as kubectl api-resources -o wide | grep clusterroles
+  # here we are providing the access to read and list the resources mentioned down
+  resources: ["job"] # here we are telling what action it can perform on the cluster based on the Role on which kubernetes resources
+
+---
+# defining the document separator to define the ClusterRoleBinding
+
+# here we can define the cluster role apiVersion using the command as below
+# we can use the command as kubectl api-resources -o wide | grep clusterrolebindings
+apiVersion: rbac.authorization.k8s.io/v1
+# This cluster role binding allows anyone in the "manager" group to read secrets in any namespace.
+kind: ClusterRoleBinding # definig the kind of kubernete object as ClusterRoleBinding in here
+metadata: # here defining the name of the ClusterRoleBinding in here
+  name: trainee-clusterole-binding # defrinign the name of the ClusterRoleBinding in this case out in here
+subjects: # here we are definign the secrets section where we can define the kind as User/Group/Service Account 
+- kind: User ## here defining the kind as Group which belong to the AWS IAM UserGroups/User
+  name: eks-trainee # Name of the USER/UserGroup is case sensitive
+  apiGroup: rbac.authorization.k8s.io # here the apiVersion is rbac.authorization.k8s.io/v1 and apiGroup of the ClusterRoleBinding being rbac.authorization.k8s.io
+roleRef: # defining the roleRef for the Role and ClusterRoles
+  kind: ClusterRole # here defining the kind is of ClusterRole
+  name: trainee-clusterole # referencing the name of the ClusterRole in here
+  apiGroup: rbac.authorization.k8s.io # here the apiVersion is rbac.authorization.k8s.io/v1 and apiGroup of the ClusterRoleBinding being rbac.authorization.k8s.io

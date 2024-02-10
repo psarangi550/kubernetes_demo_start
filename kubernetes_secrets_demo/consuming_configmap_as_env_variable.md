@@ -215,11 +215,6 @@
             # here `deploy the changes` onto the `cluster` by `applying the changes`
             # we can see the below output in this case 
             configmap/database-uri-info configured
-            deployment.apps/queueapp unchanged
-            deployment.apps/position-simulator unchanged
-            deployment.apps/position-tracker unchanged
-            deployment.apps/api-gateway unchanged
-            deployment.apps/webapp unchanged
 
         ```  
     
@@ -229,7 +224,6 @@
             kubectl apply -f workloads.yml
             # here `deploy the changes` onto the `cluster` by `applying the changes`
             # we will be getting the response as below
-            configmap/database-uri-info unchanged
             deployment.apps/queueapp unchanged
             deployment.apps/position-simulator configured
             deployment.apps/position-tracker configured

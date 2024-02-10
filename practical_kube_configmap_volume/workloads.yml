@@ -39,12 +39,13 @@ spec:
         env:
         - name: SPRING_PROFILES_ACTIVE
           value: production-microservice
-        envFrom:
-        - configMapRef:
-            name: database-uri-info-v4
-
-
-
+        volumeMounts:
+        - name: database-config-volume
+          mountPath: /etc/mydata
+      volumes:
+      - name: database-config-volume
+        configMap:
+          name: database-uri-info-v8
 ---
 
 apiVersion: apps/v1
@@ -67,10 +68,6 @@ spec:
         env:
         - name: SPRING_PROFILES_ACTIVE
           value: production-microservice
-        envFrom:
-        - configMapRef:
-            name: database-uri-info-v4
-
 ---
 
 apiVersion: apps/v1

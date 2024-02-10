@@ -1,0 +1,16 @@
+# we cansee the apiVersion for the jobs by using the command as kubectl api-resources -o wide | grep jobs
+# this will provide the jobs detail
+apiVersion: batch/v1
+kind: Job # defining the type as JOb in this case
+metadata: # here this is the name of the Job being defined in here 
+  name: test-job
+spec: # defining the specification for the Jobs in here 
+  template: # defining the POD definition over here under the template section 
+    spec: # this is the spec of the POD definition
+      containers: # container definition been defined here
+      - name: long-job # name of the container
+        image: python # image of the container
+        command: ["python"] # command for the container
+        args: ["-c", "import time; print('starting'); time.sleep(30); print('done')"] # args for the command to run
+      restartPolicy: Never # MENTIONING THE pod-lifecycle with restartPolicy as Never
+  backoffLimit: 2 # here the backoffLimit once the POD encounter error How many times kubernetes will try to restart and run the POD

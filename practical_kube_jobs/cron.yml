@@ -1,0 +1,17 @@
+apiVersion: batch/v1 # here the apiVersion which can also been seen using the command as kubectl api-resources -o wide | grep cron
+kind: CronJob # type of kubernetes object is of type Cronjob
+metadata: # name of the Cronjob
+  name: cron-job
+spec: # specification for the Cronjob
+  schedule: "* * * * *" # here we will settting the crontab expression which will try to run the job at every minute
+  jobTemplate: # here we will define the kubernetes JOb definition over here
+    spec: # specification for the kubernetes Job
+      template: # template for the kubernetes POd definition defined in here
+        spec: # specification for the POD definition 
+          containers: # container definition defined over here
+          - name: cron-python-job # name of the container
+            image: python # image for the container
+            command: ["python"] # command that will run inside the container
+            args: ["-c", "import time ; print('starting') ; time.sleep(30) ; print('done')"] # args that will be p[assed to the container
+          restartPolicy: Never # here defining the restartPolicy as Neverwhich make sure the POd will not restart and run the container even it got failed or completed
+      backoffLimit: 2 # defining the backoffLimit as 2 if the Job been find error due to unexpected reason then it will auto schedule another POD for the Deployment

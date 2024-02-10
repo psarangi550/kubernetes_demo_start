@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+# here we are sticking to the old approiach as we are changing the key over here hence we will be making another version out of it
+# here we can declare the name of the ConfigMap as database-uri-info-v3 in this case
+metadata:
+  name: database-uri-info-v8
+data: # defining the data key of the ConfiogMap where we will define the key value pair
+  database.properties: |
+    # here the key value pair will be valid variable which can be set as env variable in this case
+    database.url=https://mydatabase.<something>.<something>:3306
+    database.password=P@SSWOrd1
+    # here defining the key and value as the valid variable which can be used as env variable with value
+  # DATABASE_URI: https://mydatabase.<something>.<something>:3306
+  # DATABASE_PASSWORD: P@SSWOrd1

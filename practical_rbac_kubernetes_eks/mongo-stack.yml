@@ -1,0 +1,17 @@
+apiVersion: apps/v1 # here we are using the apiVersion as app/v1 as the apiVersion belong to the apps apiGroup
+kind: Deployment # kind of kubernetes being Deployment
+metadata: # name of the Deployment mongodb
+  name: mongodb
+spec: # specification for the mongodb
+  selector: # selector to select the PODs based on the labels
+    matchLabels:
+      app: mongodb
+  replicas: 1 # showing the replicas as 1 in this case
+  template: # showing the POD template in here
+    metadata: # POD labels been described here
+      labels:
+        app: mongodb
+    spec: # specification for the POD described here
+      containers: # here is the container details
+      - name: mongodb # name of the container
+        image: mongo:3.6.5-jessie # image of the container

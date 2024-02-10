@@ -1,0 +1,8 @@
+apiVersion: v1 # here the secrets also belong to the core group hence mentioned as apiVersion: v1
+kind: Secret # here the type of object we will be using is of type Secret
+metadata: # defining the name of the kubernetes secrets and what namespace we want to put that in 
+  name: aws-credetials # name of the kubernetes secrets
+  namespace: default # namespace where we wantr to put it in
+stringData: # inside the stringData block we can define the key and value pair here which will converted to dat field with base64 value at runtime
+  accessKey: "1234567890" # defining the key and value with non-base64 format
+  sectretKey: "SECRET1234" # defining the key and value with non-base64 format

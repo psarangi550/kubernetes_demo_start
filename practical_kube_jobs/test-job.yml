@@ -1,0 +1,12 @@
+apiVersion: v1 # here using the apiVersion as v1 as the POD belong to the Core Group
+kind: Pod # kubernetes object of type POD in here
+metadata: # name of the jobs mentioned as test-jobs
+  name: test-job
+spec: # defining the specification for the PODs
+  containers: # here are the containers details mentioned here
+  - name: long-job # name of the Jobs Defined here
+    image: python # image that we want to work on
+    command: ["python"] # here the command we want to use
+    args: ["-c", "import time; print('starting'); time.sleep(30) ; print('done')"] # this command will use the args as below 
+  restartPolicy: Never # here the restartPolicy means what action kubernetes will take if the PODs successfully completed and exit or exited simply 
+  # In Kubernetes, the restartPolicy field specifies what action should be taken by the Kubernetes system if a container in a Pod exits (either successfully or due to an error)  
