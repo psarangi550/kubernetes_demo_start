@@ -1,0 +1,81 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo
+  # namespace: traceability-dev-test1
+  labels:
+    name: mongo
+spec:
+  ports:
+  - name: mongodb-port
+    port: 27017
+    targetPort: 27017
+  clusterIP: None
+  selector:
+    app: mongo
+
+
+---
+
+apiVersion: apps/v1 # here the StatefulSets belong to the apps aiGroup hence we can define that as apps/v1
+kind: StatefulSet # here the kubernetes object will be of type as  StatefulSet
+metadata: # here defining the statefulSets as the name as mongo
+  name: mongo
+  # namespace: traceability-dev-test1 # here we are using the namespace as taceability-dev-test1
+spec: # defining the spec for the mongo StatefulSet
+  selector: # here definign the selector so that StatefulSet will fetch the selector based on the matched POD label
+    matchLabels:
+      app: mongo
+  replicas: 3 # here the number of replicas as 3n in this case
+  serviceName: mongo # here define the headlessService as mongo
+  template: # defining the template as the POD definition in this case
+    metadata: # defining the POD label inside the metadata section so that StatefulSets can pick it up
+      labels:
+        app: mongo
+    spec: # defining the spec for the POD definition in this case
+      containers: # container definition been defined also in here
+      - name: mongo # name of the container
+        image: mongo:4.0.8 # image for the container
+        args: ["--dbpath", "/data/db"] # args passed to the default command of mongodb container
+        env: # here env variable for the POD container defined in here
+        - name: MONGO_INITDB_ROOT_USERNAME # name of the env variable
+          # here we are using the configMap reference
+          valueFrom:
+            configMapKeyRef:
+              key: username
+              name: mongo-configmap
+        - name: MONGO_INITDB_ROOT_PASWORD # name of the env variable
+          # here we are using the configMap reference
+          valueFrom:
+            secretKeyRef: # here this will be changed to secretKeyRef
+              key: password
+              name: mongo-secret # here we are usig the kubernetes secrets
+        command: # command which will get executed when the POD starts with the args value
+        # here as we have already defint the repliucaSet info inside the configMap configuration hence we can remove the additional ingo
+        - mongod
+        - "--bind_ip_all"
+        - "--config=/etc/mongo/mongodb.conf"
+        volumeMounts: # performing a volumeMounts for the db container in this case
+        - name: mongo-persistence-volume # name of the volumeMount whioch will be used a the claim as well
+          mountPath: /data/db # path inside the container which need to be refered
+        - name: mongo-config-volume # defining the name as the mongo-configmap which also mneed to be refered by volumes
+          mountPath: /etc/mongo # here are mapping to /etc/mongo so that it will get the file as /etc/mongo/mongodb.conf 
+      volumes:
+      - name: mongo-config-volume # here the name of the mongo-config-volume which been described in here
+        configMap: # defining the configMaps configuration in here
+          name: mongo-configmap # here we will be using the configMap path in here
+          items: # here we are definign the items which will refering to the specific key
+          - key: mongodb.conf # name of the key of the configMap data that we want to match
+            path: mongodb.conf # refereencing to file which will be created inside the default pv managed by kubernetes
+            # here the path means the content of the mongodb.conf will be considered as the mongodb.conf file 
+            # here if we are not providing items it will going to treat each key as file and value as the value inside the file 
+            # hence in this cas e this will create 3 files username , password and mongodb.conf if the items not being mentioned
+  volumeClaimTemplates: # definign the volumeClaimTemplates for creating the persistenceVolumeClaim  in this case
+  - metadata: # here the metadata for the persistenceVolumeClaim where we define the name
+      name: mongo-persistence-volume # name of the persistenceVolumeClaim
+    spec: # specification for the persistenceVolumeClaim
+      resources: # requesting for the resource of 1Gi
+        requests:
+          storage: 10Mi
+      accessModes: ['ReadWriteOnce'] # providing it permission so that one POD inside the nnode does the read and write rest od similar POD will do the read
+      storageClassName: cloud-mongo-ssd # here defining the storageClass as cloud-mongo-ssd which we will create

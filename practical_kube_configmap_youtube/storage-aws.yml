@@ -1,0 +1,18 @@
+# apiVersion: storage.k8s.io/v1
+# kind: StorageClass
+# metadata:
+#   name: cloud-mongo-ssd
+# provisioner: ebs.csi.aws.com
+# parameters:
+#   type: gp2
+# volumeBindingMode: Immediate
+
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: cloud-mongo-ssd
+provisioner: k8s.io/minikube-hostpath
+# parameters:
+#   type: gp2
+volumeBindingMode: Immediate

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mongo-configmap
+immutable: false # defining the immutable as true in this case so that configMaps can't be edited
+data: # like other kubernetes object has the spec field configMaps has the data field in this case
+  # data field wioll going to take the key value pair as value
+  username: admin1
+  # here the username and password as configMap which can be used inside the POD definition 
+  # here we can define the configuration file inside the configMap as well
+  mongodb.conf: | # here the name of the configuration file will be as mongodb.conf and below were the value saved to the configuration file
+    storage:
+        dbPath: /data/db
+    replication:
+        replSetName: "rs0"

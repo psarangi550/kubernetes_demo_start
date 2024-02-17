@@ -7,3 +7,5 @@ pratik.key
 ca.crt
 minikube-linux-amd64
 ubuntu-gdm-set-background
+*.crt
+*.key
