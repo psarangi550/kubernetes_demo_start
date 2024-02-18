@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+# here defining tthe apiVersion as networking.k8s.io/v1 which can be fetched from kubectl api-resources -o wide | grep ingress
+kind: Ingress # defining the kubernetes object will be as type Ingress
+metadata: # defining the name fo the ingress rule as ingress-public
+  name: ingress-public
+spec: # specification for the ingress
+  rules: # here we are defining the routing rule or ingress rules in this case 
+  - host: fleetman.com # here defining the name as fleetman.com
+    http: # here we are getting the http request in this case
+      paths:
+      - path: / # definign the path endpoint for the host. we can provide reegex pattern as well
+        pathType: Prefix # here the pathType as prefix
+        backend: # using the service backend
+          service: # service details
+            name: fleetman-webapp # name of the service
+            port: # port number info of the service
+              number: 80 # port number of the service i.e ClusterIP Service been exposing
