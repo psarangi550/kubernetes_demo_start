@@ -1,0 +1,38 @@
+apiVersion: apps/v1 # here the apiVersion is apps/v1 as the Deployment belong to the apps core group
+kind: Deployment # here the type of kubernetes object will be of type Deployment
+metadata: # here defining the name for the Deployment as nginx-deploy
+  name: nginx-deploy
+  labels: # definign the label for the Deployment
+    run: nginx
+spec: # defining the specification for the Deployment in this case
+  selector: # defining the selector and based on which POD label will be selected
+    matchLabels:
+      run: nginx
+  replicas: 1
+  template: # defining the template for the POD definition
+    metadata: # here the POD label been described based on which the Services and deployment will going to pick it 
+      labels: # here we are defining the POD labels
+        run: nginx
+    spec: # definign the specification for the POD definition
+
+      initContainers: # here defining the deficition for the init container in here
+      - name: busybox # name of the init container
+        image: busybox # image for the init container
+        command: ["asdf"] # command for the container
+        args: ["-c", "echo 'welcome to kubernetes' > /nginx-share/index.html "] # args passerd to the container
+        volumeMounts: # mounting the volumes of the initContainers
+        - name: shared-volume # name of the volumeMounts
+          mountPath: /nginx-share # defining the mountPath in this case for the container which will referenced by the container
+
+      containers: # definign the POD definition in here
+      - name: nginx # name of the container
+        image: nginx # image for the container
+        volumeMounts: # mounting the volumes of the actual Container
+        - name: shared-volume # name of the volumeMounts
+          mountPath: /usr/share/nginx/html # defining the mountPath in this case for the container which will referenced by the container
+
+      volumes: # here we are defining the volumes in this case
+      - name: shared-volume # referencing the volumeMount name here
+        emptyDir: {} # here the emptyDir is a volume type and An emptyDir volume is initially empty, but any containers in the pod can write to it
+        # This type of volume is typically used for temporary storage or for sharing files between containers running in the same pod.
+        # when the pod is deleted from the node, the data in the emptyDir volume is lost.

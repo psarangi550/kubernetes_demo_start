@@ -1,0 +1,8 @@
+apiVersion: metallb.io/v1beta1 # we can get the apiVersion using the command as kubectl api-resources | grep metallb
+kind: IPAddressPool # here the IPAddressPool is the type of kubernetes object in this case 
+metadata: # here defining the name of the IPAddressPool
+  name: first-pool
+  namespace: metallb-system # defining the namespace as metallb-system 
+spec: # defining the spec for the IPAddressPool
+  addresses: # here we can get the info about the network range using the `docker network inspect kind` command which will provide the kind node which is a docker container network address its is 172.18.0.1-172.18.0.255 here i am using the small chunk of it
+  - 172.18.0.10-172.18.0.250

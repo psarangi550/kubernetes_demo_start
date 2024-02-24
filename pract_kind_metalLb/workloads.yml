@@ -1,0 +1,46 @@
+apiVersion: apps/v1 # here the apiVersion being as the apps/v1 as the apiGroup belong to apps
+kind: Deployment # here defining the kubernetes object with type as Deployment
+metadata: # defining the nae of the Deployment as webapp
+  name: webapp
+  labels: #defining the Labels for the Deployment so that Service can fetch the Deployment with the specific labels
+    app.kubernetes.io/name: webapp
+    name: webapp
+spec: # here definig the specification for the Deployment in here
+  selector: # here we are definig the selector which will select the app based on labels
+    matchLabels:
+      app.kubernetes.io/name: webapp
+  replicas: 1 # here we will be defining only onen replica will be spunned
+  template: # defining the template for the POD definition
+    metadata:
+      labels: # defining the POD label based on which Deployment wand Services will associate with the POD
+        app.kubernetes.io/name: webapp
+    spec: # defining the POD specification in this case as in here
+      containers: # container label info been provided in here
+      - name: webapp # name of the container
+        image: nginx # image for the container
+        command: # command used when the container been spunned
+        - /bin/sh
+        - -c
+        - "echo 'welcome to my webapp' > /usr/share/nginx/html/index.html & nginx -g 'daemon off;'"
+      dnsConfig: # here we can specify the DNS configuration with respect to the POD container
+        options: # defining the options for the Extra DNS configuration as below
+        - name: ndots # here we are using the ndot rule so when the request come it will check for 2 dot inside the name if not there then add extra info
+          value: "2" # here we are checking for the 2 ndots, son that if a request made as `example.com` where only one . is there it will add extra info
+          # here value should be a string not an integer
+---
+
+apiVersion: v1 # here we are defining the apiVersion as v1 as the services belong to  the core api Group
+kind: Service # defining the kubernetes object as Service in this case
+metadata: # name of the kubernetes Service as webapp-svc
+  name: webapp-svc
+  labels: # defining the labels inside the Kubernetes Service 
+    app.kubernetes.io/name: webapp
+spec: # specification for the Service
+  selector: # here defining the selector based on the POD label so that the Service can associate with the PODs 
+    app.kubernetes.io/name: webapp
+  ports:
+  - name: http # name of the port being as http
+    port: 80 # allow traffic on port 80
+    targetPort: 80 # target Port as 80 which will open for the container
+    protocol: TCP # here we are using the protocol as TCp in this case
+  type: ClusterIP # defining the Service type as the LoadBalancer in this case

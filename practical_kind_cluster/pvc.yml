@@ -1,0 +1,11 @@
+apiVersion: v1 # here the apiversion as v1 as it belong to the core Group
+kind: PersistentVolumeClaim # the type of object being PersistentVolumeClaim
+metadata: # name of the persitentVolume as pvc-demo
+  name: pvc-demo
+spec: # here definign the spec for the pvc here
+  resources: # requestuing for the storage of 7Gi
+    requests:
+      storage: 500Mi
+  accessModes: # here the kind kiubernetes cluster have the load-path-provision which support only ReadWriteOnce not ReadWritemany
+  - ReadWriteOnce
+  storageClassName: standard # here we are defining the default Storageclass created by the kind 

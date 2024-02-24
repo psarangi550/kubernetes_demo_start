@@ -1,0 +1,67 @@
+apiVersion: v1 # here the Service belong to the v1 version as the Services belong to the core group
+kind: Service # here we are using the kubernetes kind of kubernetes object as Service in this case
+metadata: # here the name of the kubernetes service being as fleetman-webapp
+  name: fleetman-webapp
+spec: # here defining the spec as Specification for kubernetes Service
+  selector: # defining the selecto which will select the POD based on the POD label
+    app: webapp
+  ports: # ports that we want to open using the Services
+  - name: http # name of the port that we want to allowed by service
+    port: 80 # allowing the traffic on port 80 and container Port also 80 in this case
+    protocol: TCP # protocol Used for the Service
+  type: ClusterIP # here the type of Service being as ClusterIP
+
+---
+
+apiVersion: v1 # here the Service belong to the v1 version as the Services belong to the core group
+kind: Service # here we are using the kubernetes kind of kubernetes object as Service in this case
+metadata: # here the name of the kubernetes service being as fleetman-queue
+  name: fleetman-queue
+spec: # here defining the spec as Specification for kubernetes Service
+  selector: # defining the selecto which will select the POD based on the POD label
+    app: queueapp
+  ports: # ports that we want to open using the Services
+
+  - name: admin # name of the port that we want to allowed by service
+    port: 8161 # allowing the traffic on port 8161 and container Port also 8161 in this case
+    protocol: TCP # protocol Used for the Service
+
+  - name: endpoint # defining another port which  we want to consider
+    port: 61616 # here this is the nedpoint for the allowing the traffic on port 61616 and container Port also 8161 in this case
+    protocol: TCP # protocol Used for the Service
+
+  type: ClusterIP # here the type of Service being as ClusterIP
+
+---
+
+apiVersion: v1 # here the Service belong to the v1 version as the Services belong to the core group
+kind: Service # here we are using the kubernetes kind of kubernetes object as Service in this case
+metadata: # here the name of the kubernetes service being as fleetman-position-tracker
+  name: fleetman-position-tracker
+spec: # here defining the spec as Specification for kubernetes Service
+  selector: # defining the selecto which will select the POD based on the POD label
+    app: position-tracker
+  ports: # ports that we want to open using the Services
+
+  - name: api # name of the port that we want to allowed by service
+    port: 8080 # allowing the traffic on port 8080 and container Port also 8080 in this case
+    protocol: TCP # protocol Used for the Service
+
+  type: ClusterIP # here the type of Service being as ClusterIP
+
+---
+
+apiVersion: v1 # here the Service belong to the v1 version as the Services belong to the core group
+kind: Service # here we are using the kubernetes kind of kubernetes object as Service in this case
+metadata: # here the name of the kubernetes service being as fleetman-api-gateway
+  name: fleetman-api-gateway
+spec: # here defining the spec as Specification for kubernetes Service
+  selector: # defining the selecto which will select the POD based on the POD label
+    app: api-gateway
+  ports: # ports that we want to open using the Services
+
+  - name: rest # name of the port that we want to allowed by service
+    port: 8080 # allowing the traffic on port 8080 and container Port also 8080 in this case
+    protocol: TCP # protocol Used for the Service
+
+  type: ClusterIP # here the type of Service being as ClusterIP

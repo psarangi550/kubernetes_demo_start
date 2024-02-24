@@ -1,0 +1,8 @@
+apiVersion: metallb.io/v1beta1 # we can get the apiVersion using the command as kubectl api-resources | grep metallb
+kind: L2Advertisement # here kubernetes object will be of type as L2Advertisement
+metadata: # providing the name for the L2Advertisement
+  name: homelab-l2
+  namespace: metallb-system # using the namespace as the metallb-system 
+spec: # specification for the L2Advertisement config 
+  ipAddressPools: # here defining IPAddressPool
+  - first-pool # here we are referencing the IPAddressPool that we have created 

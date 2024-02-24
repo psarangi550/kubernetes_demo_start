@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1 # here we can see the apiVersion from the command as kubectl api-resources | grep ingress
+kind: Ingress # here the kubernetes Resource type as Ingress
+metadata: # name of the Ingress as basic-routing
+  name: basic-routing
+  annotations: # here we can also use the annotations to define the ingress class name as nginx as well
+    kubernetes.io/ingress.class: "nginx"
+spec: # here defining the specification for the ingress rule in this case
+  rules: # herre we will be defining the host based or path based rules in this case
+  - host: web-app.home-k8s.lab # here hostname being defined in here
+    http:
+      paths:
+      - path: / # accessing the root endpoint
+        pathType: Prefix # defining the pathType as [prefix in this case]
+        backend: # defining the backend as service in this case
+          service:
+            name: webapp-svc # defining the backend service in this case
+            port:
+              number: 80 # accessing on the port 80 in this case 

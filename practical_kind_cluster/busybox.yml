@@ -1,0 +1,17 @@
+apiVersion: v1 #here the apiVersion being v1 as Pod belong to core group
+kind: Pod # type of kubernetes obejct as Pod
+metadata: # name of the POD as busybox
+  name: busybox
+spec: # specificstion of the POD being defined in here
+  containers: # container details in here
+  - name: busybox # name of the container
+    image: busybox # image for the container
+    command: ["/bin/sh"] # command run on container
+    args: ["-c", "sleep 600"] # args passe to the command
+    volumeMounts: # performing a Bolume Mounting
+    - name: host-volume # name of the VolumeMount for container path
+      mountPath: /mydata # container path location
+  volumes: # volumes for the PV on hostPath
+  - name: host-volume # referencing the  volumeMount in here
+    persistentVolumeClaim: # using the persistentVolumeClaim
+      claimName: pvc-demo # referncing the pvc in this case
