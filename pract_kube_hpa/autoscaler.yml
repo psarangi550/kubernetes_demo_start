@@ -1,0 +1,19 @@
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: api-gateway-another
+  namespace: default
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: api-gateway
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 400
+  maxReplicas: 5 # here defining the maximum number of Replica to spin to when there is high number of traffic 
+  minReplicas: 1 # here defining the minimum number of Replica to spin down to when there is low number of traffic

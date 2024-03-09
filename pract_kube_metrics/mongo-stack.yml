@@ -1,0 +1,49 @@
+apiVersion: apps/v1 # defining the apiVersion as apps/v1 for the Deployment as it exist in apps group
+kind: Deployment # defining the type of object in this case as Deployment
+metadata: # defining the name for the Deployment out in here
+  name: mongodb
+spec: # defining the specification for the Deployment
+  replicas: 1 # using 1 replica-set which will responsible to manage the POD 
+  selector: # defining the selector key value pair based on the POD label
+    matchLabels:
+      app: mongodb
+  template: # defining the POD definition inside the template derivatiove
+    metadata: # defining the POD label inside the metadata section
+      labels: # defining the POD label as key and value pair
+        app: mongodb
+    spec: # defining the specification for the POD definition
+      containers: # defining the containers inside the POD
+      - name: mongodb # name of the container as mongodb
+        image: mongo:3.6.5-jessie # image  we will beusing for the container
+        volumeMounts: # using the volumeMount which will define the lis of folder inside the container we want to map outside 
+        - name: mongo-persist-volume # using the name of the VolumeMount which will be used in the volumes section to refer which folder inside container we want map as there can be multiple folder inside the container map outside of the container 
+          mountPath: /data/db # defining the folder we want to map inside the container
+        resources: # setting up the resource requests in this case in here
+          requests:
+            memory: 400Mi # here setting up the resource request for 400MegaByte for the Memory
+            cpu: 1000m # here setting up 1000 millicore for the CPU resource
+
+      volumes: # defining the volume which will tell how we will implement the volume mapping to a hostPath/awsEbsStorage or anything 
+      - name: mongo-persist-volume # referencing the volumeMount based on their name provided
+        persistentVolumeClaim: # defining the persistanceVolumeClaim which will be a separate confifuration file to define how to implement the volume mapping or mount in hostPath/awsEBSStorage
+          claimName: mongo-pvc # defining the claimName which need to be defined inside  the separate confifuration file with the same name in order to claim some storage for the volume
+          # here this mongo-pvc claim name should be defined in the separate configuration file which will define the how to implement volume mapping and also it will claim the spaces for the Persistant Volume
+
+
+
+---
+# defining the documentSeparator over here 
+
+apiVersion: v1 # defining the apiVersion as v1 in here as it belong to the core group 
+kind: Service # defining the kubernetes object type as Service in here
+metadata: # defining the name for the Service whioch should exactly name as fleetman-mongodb
+  name: fleetman-mongodb
+spec: # defining the spec for the Service defined here
+  selector: # this will select the POD based on label same as the key-value pair
+    app: mongodb
+  ports: # defining the ports that need to exposed for the Service
+  - name: mongoport # name for the port defined as mongoport
+    port: 27017 # defining the port number as 27017 in here
+    protocol: TCP # defining the protocol as TCP
+
+  type: ClusterIP # defining it as ClusterIp service which will not avaialble outside of the minikube kubernetes local cluster

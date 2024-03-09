@@ -1,0 +1,21 @@
+apiVersion: v1 # here the apiVersion for the POD is v1 as it belong to the core group
+kind: Pod # here the kubernetes object will be as POD
+metadata: # here providing the name of the POD as liveness-exec 
+  name: liveness-exec
+  labels: # providing the labels for the POD to be selected by the kubernetes Deployment or Service Selector based on POD labels
+    test: liveness
+spec: # definign the specification for the POD container
+  containers: # here are the contianer details in this case
+  - name: liveness # name of the POD in this case
+    image: k8s.gcr.io/busybox # here this is the image inside the kubernetes registry
+    args: # here providing the command args which will be executed as soon as the container starts which will create the file called healthy & remove file healthy later after 30 sec and then gors for sleep of 600sec
+    - /bin/sh
+    - -c
+    - touch /tmp/healthy ; sleep 30 ; rm -rf /tmp/healthy ; sleep 600
+    livenessProbe: # here setting up the livenessProbe in here
+      exec: # providing the exec ommand in here
+        command: # here command been provided which will be tried after every 5 minute
+        - cat
+        - /tmp/healthy
+      initialDelaySeconds: 5 # here it will wait for 5 seconds after the container start and probe begin
+      periodSeconds: 5 # here we are probe request in 5 sec interval

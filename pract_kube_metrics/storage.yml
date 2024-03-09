@@ -1,0 +1,28 @@
+apiVersion: v1 # here defining the apiVersion which is v1 for the kubernetes PersistentVolumClaim hence the apiGroup being as core
+kind: PersistentVolumeClaim # here the type of Kubernetes object will be of type as PersistentVolumeClaim
+metadata: # here in the metadata section we are referencing the mongo-pvc which is the claimName we defined in mongo-stack.yml
+  name: mongo-pvc
+spec: # specification for the PersistentVolumeClaim
+  accessModes: # here defining the accessModes as ReadWriteOnce hence multiple same POD inside the one node only one POD perform rw operation rest will only read
+  - ReadWriteOnce
+  resources: # requesting for 500Mi of space 
+    requests:
+      storage: 500Mi
+  storageClassName: local-storage # linking the PersistentVolumeClaim to the PersistentVolume using the storageClassName
+
+---
+
+apiVersion: v1 # here defining the apiVersion which is v1 for the kubernetes PersistentVolumClaim hence the apiGroup being as core
+kind: PersistentVolume # here the type of Kubernetes object will be of type as PersistentVolume
+metadata: # here in the metadata section we are defining  the PersistentVolume as my-stoage
+  name: my-storage
+spec: # specvification for the PersistentVolume 
+  accessModes: # here defining the accessModes as ReadWriteOnce hence multiple same POD inside the one node only one POD perform rw operation rest will only read
+  - ReadWriteOnce
+  capacity: # here defining the capacity for the PersistentVolume that will store the data
+    storage: 500Mi
+  storageClassName: local-storage # linking the PersistentVolumeClaim to the PersistentVolume using the storageClassName
+  hostPath: # here as we are using the local minikube cluster we can defined the hostPath in this case
+    path: /mnt/mongo-data # path to the Host System
+    type: DirectoryOrCreate # if the path not found then we will create the directory mentioned as path
+

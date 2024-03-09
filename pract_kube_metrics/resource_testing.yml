@@ -1,0 +1,21 @@
+apiVersion: apps/v1 # here defining the apiversion as apps/v1 as the Deployment belong to the apps apiGroup
+kind: Deployment # here the kubernetes object will be of type as Deployment
+metadata: # defining the name of the Deployment as queueapp in this case
+  name: queueapp
+spec: # defining the specification for the Deployment in here
+  selector: # here defining the selectorfor the Deployment which will be selected based on the POD labels
+    matchLabels:
+      app: queueapp
+  replicas: 2 # here the number of repluicas thats been defined as 2 in this case
+  template: # defining the template for the POD definition over here
+    metadata: # under the metadata section we are defining the POD labels based on which Deployment and Service will associated with the POD
+      labels:
+        app: queueapp
+    spec: # specification for the POD container defined in here
+      containers: # contaiers details is over here
+      - name: queueapp # name of the container as queueapp
+        image: richardchesterwood/k8s-fleetman-queue:release2 # image for the POD being defined in here
+        resources: # requesting for the memory and CPU resource for the POD container
+          requests: # here we are requesting the kubernetes scheduler so that it can make smart decession on which node this POD will spin
+            memory: 300Mi # here we are defining the 300MegaByte of memory been needed for the POD container
+            cpu: 100m # here requesting for the cpu of 100milloicore for the POD container

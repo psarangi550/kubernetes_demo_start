@@ -1,0 +1,139 @@
+apiVersion: apps/v1 # here the Deployment belongs to the apps group hyence defined as below 
+kind: Deployment # type of the kubernetes object is deployment
+metadata: # name of the Deployment been described here
+  name: position-simulator
+spec: # specification for the Deployment been defined here
+  selector: # selector to select the POD based on the POD label
+    matchLabels:
+      app: position-simulator
+  replicas: 1 # replicas of the POD defined as 1 at any instance
+  template: # template for the POD container
+    metadata: # POD labels been defined inside the metadata section
+      labels:
+        app: position-simulator
+    spec: # Specification of the POD container been defined in here
+      containers: # container details provided here
+      - name: position-simulator # name of the container
+        image: richardchesterwood/k8s-fleetman-position-simulator:resources # image of the container changing the tags to resources
+        env: # env Variable for the container
+        - name: SPRING_PROFILES_ACTIVE # name 0f the env Variable 
+          value: production-microservice # value of the env Variable
+        resources: # setting up the resource request for the position-simulator POD container
+          requests:
+            memory: 350Mi # setting up the resources in the range as 350Mi i.e 350 Megabyte 
+            cpu: 100m # setting up the resources in this request as  100millicore
+
+---
+
+apiVersion: apps/v1 # here the Deployment belongs to the apps group hence defined as below 
+kind: Deployment # type of the kubernetes object is deployment
+metadata: # name of the Deployment been described here
+  name: position-tracker
+spec: # specification for the Deployment been defined here
+  selector: # selector to select the POD based on the POD label
+    matchLabels:
+      app: position-tracker
+  replicas: 1 # replicas of the POD defined as 1 at any instance
+  template: # template for the POD container
+
+    metadata: # POD labels been defined inside the metadata section
+      labels:
+        app: position-tracker
+    spec: # Specification of the POD container been defined in here
+      containers: # container details provided here
+      - name: position-tracker # name of the container
+        image: richardchesterwood/k8s-fleetman-position-tracker:resources # image of the container changing the tags to resources
+        env: # env Variable for the container
+        - name: SPRING_PROFILES_ACTIVE # name 0f the env Variable 
+          value: production-microservice # value of the env Variable
+        resources: # setting up the resource request for the position-tracker POD container
+          requests:
+            memory: 350Mi # setting up the resources in the range as 350Mi i.e 350 Megabyte 
+            cpu: 100m # setting up the resources in this request as  100millicore
+
+
+---
+
+apiVersion: apps/v1 # here the Deployment belongs to the apps group hence defined as below 
+kind: Deployment # type of the kubernetes object is Deployment
+metadata: # name of the Deployment been described here
+  name: api-gateway
+  namespace: default # here the namespace for the POD being as default
+spec: # defining the specification for the Deployment in this case
+  selector: # selector for the deployment based on POD label being defined in here
+    matchLabels:
+      app: api-gateway
+  replicas: 3 #replicas of the POD defined as 3 at any instance
+  template: # template for the POD container
+    metadata: # POD labels been defined inside the metadata section
+      labels:
+        app: api-gateway
+    spec: # Specification of the POD container been defined in here
+      containers: # container details provided here
+      - name: api-gateway # name of the container
+        image: richardchesterwood/k8s-fleetman-api-gateway:performance # image of the container changing the tags to resources
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+        env: # env Variable for the container
+        - name: SPRING_PROFILES_ACTIVE # name 0f the env Variable 
+          value: production-microservice # value of the env Variable
+        resources: # setting up the resource request for the api-gateway POD container
+          requests:
+            memory: 350Mi # setting up the resources in the range as 350Mi i.e 350 Megabyte 
+            cpu: 100m # setting up the resources in this request as  100millicore
+
+---
+
+apiVersion: apps/v1 # here the Deployment belongs to the apps group hence defined as below 
+kind: Deployment # type of the kubernetes object is Deployment
+metadata: # name of the Deployment been described here
+  name: webapp
+  namespace: default # here the namespace it belong to is default
+spec: # defining the specification for the Deployment in this case
+  selector: # selector for the deployment based on POD label being defined in here
+    matchLabels:
+      app: webapp
+  replicas: 1 # replicas of the POD defined as 1 at any instance
+  template: # template for the POD container
+
+    metadata: # POD labels been defined inside the metadata section
+      labels:
+        app: webapp
+    spec: # Specification of the POD container been defined in here
+      containers: # container details provided here
+      - name: webapp # name of the container
+        image: richardchesterwood/k8s-fleetman-webapp-angular:release2 # image of the container changing the tags to resources
+        env: # env variable defined for the container
+        - name: SPRING_PROFILES_ACTIVE # name of the env Variable
+          value: production-microservice # value of the env Variable
+        resources:
+          requests:
+            memory: 50Mi
+            cpu: 50m
+
+
+---
+
+apiVersion: apps/v1 # here the Deployment belongs to the apps group hence defined as below 
+kind: Deployment # type of the kubernetes object is Deployment
+metadata: # name of the Deployment been described here
+  name: queueapp
+spec: # here the spoecification for the Deployment been defined in here
+  replicas: 1 # here we are spinning 1 replica in this case
+  selector: # selector for the deployment based on POD label being defined in here
+    matchLabels:
+      app: queueapp
+  template: # template for the POD container
+    metadata: # POD labels been defined inside the metadata section
+      labels:
+        app: queueapp
+    spec: # specification for the POC container
+      containers: # container details been provided here
+      - name: queueapp # name of the container
+        image: richardchesterwood/k8s-fleetman-queue:resources # image of the container changing the tags to resources
+        resources: # reouces for the container
+          requests: # here requesting for the resources in the POD container
+            memory: 300Mi # we need the Memory of 300 megabyte
+            cpu: 100m # we need the cpu of 100millicore

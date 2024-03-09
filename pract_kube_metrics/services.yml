@@ -1,0 +1,71 @@
+apiVersion: v1 # here defining the apiVersion which is v1 for the kubernetes Services hence the apiGroup being as core 
+kind: Service # here the type of kubernetes object will be of as Service
+metadata: # name of the Service being as fleetman-webapp
+  name: fleetman-webapp
+spec: # specification for the Services
+  selector: # selector for the Kubernetes Service using which based on the POD labels the selector will be selected
+    app: webapp
+  ports: # defining the ports for the kubernetes services
+  - name: http # here the name of the port being as http
+    port: 80 # allowing traffic on port 80
+    targetPort: 80 # container port being as 80
+    protocol: TCP # protocol as TCP
+    nodePort: 30030 # opening Node Port as 30030
+  type: NodePort # type of Service as NodePort
+
+---
+
+apiVersion: v1 # here defining the apiVersion which is v1 for the kubernetes Services hence the apiGroup being as core 
+kind: Service # here the type of kubernetes object will be of as Service
+metadata: # name of the Service being as fleetman-queueapp
+  name: fleetman-queue
+spec: # specification for the Services
+  selector: # selector for the Kubernetes Service using which based on the POD labels the selector will be selected
+    app: queueapp
+  ports: # defining the ports for the kubernetes services
+  - name: admin # here the name of the port being as admin
+    port: 8161 # allowing traffic on port 8161
+    targetPort: 8161 # container port being as 8161
+    protocol: TCP # protocol as TCP
+    nodePort: 30050 # opening Node Port as 30050
+
+  - name: endpoint # here the name of the port being as endpoint
+    port: 61616 # allowing traffic on port 61616
+    protocol: TCP # protocol as TCP
+
+  type: NodePort # type of Service as NodePort
+
+---
+
+apiVersion: v1 # here defining the apiVersion which is v1 for the kubernetes Services hence the apiGroup being as core 
+kind: Service # here the type of kubernetes object will be of as Service
+metadata: # name of the Service being as fleetman-position-tracker
+  name: fleetman-position-tracker
+spec: # specification for the Services
+  selector: # selector for the Kubernetes Service using which based on the POD labels the selector will be selected
+    app: position-tracker
+  ports: # defining the ports for the kubernetes services
+  - name: rest # here the name of the port being as rest
+    port: 8080 # allowing traffic on port 8080
+    targetPort: 8080 # container Port is at 8080
+    protocol: TCP # protocol is of TCP
+
+  type: ClusterIP # here the Service Type as ClusterIP
+
+---
+
+apiVersion: v1 # here defining the apiVersion which is v1 for the kubernetes Services hence the apiGroup being as core 
+kind: Service # here the type of kubernetes object will be of as Service
+metadata: # name of the Service being as fleetman-api-gateway
+  name: fleetman-api-gateway
+spec: # specification for the Services
+  selector: # selector for the Kubernetes Service using which based on the POD labels the selector will be selected
+    app: api-gateway
+  ports: # defining the ports for the kubernetes services
+  - name: rest # here the name of the port being as rest
+    port: 8080 # allowing traffic on port 8080
+    targetPort: 8080 # container Port is at 8080
+    protocol: TCP # protocol is of TCP
+    nodePort: 30020
+
+  type: NodePort # here the Service Type as ClusterIP
