@@ -552,3 +552,9 @@
         Warning  Unhealthy  2m22s (x2 over 2m23s)  kubelet            Readiness probe failed: Get "http://10.244.1.26:8080/": dial tcp 10.244.1.26:8080: connect: connection refused
 
     ```
+
+- here we have learned `How these QoS labels been derived from` and `How it calculate the QoS Class Labels based on the resources request and limits`
+
+- but we have not see `whats the purpose` of the `QoS class labels`
+
+- we will need to put the `Kubernetes Node under pressure` to see `How the QoS class labels are very relevant`
